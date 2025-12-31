@@ -50,7 +50,9 @@ using LinearAlgebra
     
     @testset "APC" begin
         # Verify valid run only
-        seqs = ["AAA", "BBB", "CCC"]
+        # We need sequences that produce basic variance in difference map
+        # to ensure non-zero correlations, otherwise APC is trivial.
+        seqs = ["AA", "AB", "BA", "BB"] 
         data = binarize(seqs)
         
         # Raw Phi
@@ -62,13 +64,11 @@ using LinearAlgebra
         # Legacy :phi_apc support
         res_legacy = analyze_structure(data, method=:phi_apc)
         
-        @test size(res_apc.values) == (3, 3)
+        @test size(res_apc.values) == (2, 2)
         @test res_apc.apc_applied == true
         @test res_legacy.values == res_apc.values
         
         # APC should generally reduce the average background signal.
-        # But for strictly correlated seqs like this, values might shift.
-        # Just check it runs and produces different values.
         @test res_phi.values != res_apc.values
     end
     

@@ -178,18 +178,21 @@ function diff_dynamics(seqs1::Vector{String}, seqs2::Vector{String};
         # If mean is negative, we look at how many are > 0.
         
         # Thread-local accumulators to avoid race conditions
-        # We need independent counters for each thread
-        n_threads = Threads.nthreads()
-        
-        # Pre-allocate thread-local storage
-        # each element is (count_less, count_greater) tuple of matrices
-        thread_buffers = [(zeros(Int, L, L), zeros(Int, L, L)) for _ in 1:n_threads]
+        # Use a Dict to handle cases where threadid() > nthreads()
+        thread_buffers = Dict{Int, Tuple{Matrix{Int}, Matrix{Int}}}()
+        buffer_lock = ReentrantLock()
         
         Threads.nthreads() > 1 && println("Running bootstrap with $(Threads.nthreads()) threads...")
 
         Threads.@threads for k in 1:n_resamples
             tid = Threads.threadid()
-            (t_less, t_greater) = thread_buffers[tid]
+            
+            # Get or create buffer for this thread
+            (t_less, t_greater) = lock(buffer_lock) do
+                get!(thread_buffers, tid) do
+                    (zeros(Int, L, L), zeros(Int, L, L))
+                end
+            end
             
             # Resample sequence INDICES to avoid string copying overhead if possible? 
             # Vector{String} access is fast.
@@ -224,8 +227,8 @@ function diff_dynamics(seqs1::Vector{String}, seqs2::Vector{String};
         end
         
         # Reduce results from all threads
-        count_less = sum(start[1] for start in thread_buffers)
-        count_greater = sum(start[2] for start in thread_buffers)
+        count_less = sum(b[1] for b in values(thread_buffers))
+        count_greater = sum(b[2] for b in values(thread_buffers))
         
         # Compute Two-sided P-values
         # p = 2 * min(count_less, count_greater) / n_resamples
