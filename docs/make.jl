@@ -17,6 +17,6 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/YourRepo/BinarizeDynamics.jl.git",
+    repo = "github.com/ecoinfos/BinarizeDynamics.jl.git",
     devbranch = "master"
 )
