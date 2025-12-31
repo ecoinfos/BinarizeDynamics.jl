@@ -1,8 +1,8 @@
 # BinarizeDynamics.jl
 
-[![Build Status](https://github.com/YourRepo/BinarizeDynamics.jl/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/YourRepo/BinarizeDynamics.jl/actions/workflows/ci.yml?query=branch%3Amain)
-[![codecov](https://codecov.io/gh/YourRepo/BinarizeDynamics.jl/graph/badge.svg?token=token)](https://codecov.io/gh/YourRepo/BinarizeDynamics.jl)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://YourRepo.github.io/BinarizeDynamics.jl/dev/)
+[![Build Status](https://github.com/ecoinfos/BinarizeDynamics.jl/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ecoinfos/BinarizeDynamics.jl/actions/workflows/ci.yml?query=branch%3Amain)
+[![codecov](https://codecov.io/gh/ecoinfos/BinarizeDynamics.jl/graph/badge.svg?token=token)](https://codecov.io/gh/ecoinfos/BinarizeDynamics.jl)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://ecoinfos.github.io/BinarizeDynamics.jl/dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 
