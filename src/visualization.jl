@@ -1,55 +1,20 @@
-using Makie
 
 """
-    plot_interaction(mat::InteractionMatrix; title="Interaction Matrix")
+    plot_interaction(mat::InteractionMatrix; kwargs...)
 
 Plot the interaction matrix as a heatmap.
-Returns a Makie Figure.
+Requires `Makie` or `CairoMakie` to be loaded.
 """
-function plot_interaction(mat::InteractionMatrix; title="Interaction Matrix")
-    # Extract matrix
-    M = mat.matrix
-    L = size(M, 1)
-    
-    fig = Figure(size=(800, 600))
-    ax = Axis(fig[1, 1], 
-        title=title,
-        xlabel="Position",
-        ylabel="Position",
-        aspect=DataAspect()
-    )
-    
-    # Heatmap
-    # M is (L x L)
-    # Makie heatmap expects x, y, z.
-    hm = heatmap!(ax, 1:L, 1:L, M, colormap=:viridis)
-    Colorbar(fig[1, 2], hm, label="Correlatedness")
-    
-    return fig
+function plot_interaction(args...; kwargs...)
+    error("Plotting requires Makie. Please run `using Makie`, `using GLMakie`, or `using CairoMakie` to enable this functionality.")
 end
 
 """
-    plot_differential(mat::InteractionMatrix; title="Differential Dynamics")
+    plot_differential(mat::InteractionMatrix; kwargs...)
 
 Plot the differential matrix.
+Requires `Makie` or `CairoMakie` to be loaded.
 """
-function plot_differential(mat::InteractionMatrix; title="Differential Dynamics")
-    # Diverging colormap for differences
-    M = mat.matrix
-    L = size(M, 1)
-    
-    limit = maximum(abs.(M))
-    
-    fig = Figure(size=(800, 600))
-    ax = Axis(fig[1, 1], 
-        title=title,
-        xlabel="Position",
-        ylabel="Position",
-        aspect=DataAspect()
-    )
-    
-    hm = heatmap!(ax, 1:L, 1:L, M, colormap=:balance, colorrange=(-limit, limit))
-    Colorbar(fig[1, 2], hm, label="Difference")
-    
-    return fig
+function plot_differential(args...; kwargs...)
+    error("Plotting requires Makie. Please run `using Makie`, `using GLMakie`, or `using CairoMakie` to enable this functionality.")
 end

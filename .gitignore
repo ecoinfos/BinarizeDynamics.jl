@@ -1,0 +1,22 @@
+# Data folder
+data/
+
+# Generated files (Images)
+*.png
+*.svg
+*.pdf
+*.eps
+
+# Julia standard ignores
+*.jl.cov
+*.jl.mem
+*.ji
+*.zwc
+Manifest.toml
+docs/build/
+docs/site/
+
+# System and Editor
+.DS_Store
+.vscode/
+.ipynb_checkpoints

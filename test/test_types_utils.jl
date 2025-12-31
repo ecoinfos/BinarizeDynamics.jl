@@ -8,8 +8,9 @@ using BinarizeDynamics
     @test pm.total_pairs == 6
 end
 
-@testset "Index utils" begin
+@testset "Index utils (PairMapper)" begin
     n = 4
+    pm = PairMapper(n)
     # Expected mapping:
     # 1 -> (1,2)
     # 2 -> (1,3)
@@ -18,22 +19,50 @@ end
     # 5 -> (2,4)
     # 6 -> (3,4)
     
-    @test BinarizeDynamics.index_to_pair(1, n) == (1, 2)
-    @test BinarizeDynamics.index_to_pair(3, n) == (1, 4)
-    @test BinarizeDynamics.index_to_pair(4, n) == (2, 3)
-    @test BinarizeDynamics.index_to_pair(6, n) == (3, 4)
+    @test pair_from_index(pm, 1) == (1, 2)
+    @test pair_from_index(pm, 3) == (1, 4)
+    @test pair_from_index(pm, 4) == (2, 3)
+    @test pair_from_index(pm, 6) == (3, 4)
     
-    @test_throws BoundsError BinarizeDynamics.index_to_pair(0, n)
-    @test_throws BoundsError BinarizeDynamics.index_to_pair(7, n)
+    @test_throws BoundsError pair_from_index(pm, 0)
+    @test_throws BoundsError pair_from_index(pm, 7)
     
-    @test BinarizeDynamics.pair_to_index(1, 2, n) == 1
-    @test BinarizeDynamics.pair_to_index(1, 4, n) == 3
-    @test BinarizeDynamics.pair_to_index(2, 3, n) == 4
-    @test BinarizeDynamics.pair_to_index(3, 4, n) == 6
+    @test pair_index(pm, 1, 2) == 1
+    @test pair_index(pm, 1, 4) == 3
+    @test pair_index(pm, 2, 3) == 4
+    @test pair_index(pm, 3, 4) == 6
     
     # Auto-swap check
-    @test BinarizeDynamics.pair_to_index(2, 1, n) == 1
-    @test_throws ArgumentError BinarizeDynamics.pair_to_index(1, 1, n)
+    @test pair_index(pm, 2, 1) == 1
+    @test_throws ArgumentError pair_index(pm, 1, 1)
+end
+
+@testset "Core Types Constructors" begin
+    # BinarizedPairs
+    # data: (n_pairs, L)
+    # positions: Vector{Int}
+    # mapper: PairMapper
+    
+    pm = PairMapper(3) # 3 seqs -> 3 pairs
+    L = 5
+    data = trues(3, L)
+    pos = collect(1:L)
+    
+    bp = BinarizedPairs(data, pos, pm)
+    @test bp.positions == pos
+    @test size(bp.data) == (3, L)
+    
+    # Validation fail
+    @test_throws ArgumentError BinarizedPairs(trues(2, L), pos, pm) # wrong pairs
+    @test_throws ArgumentError BinarizedPairs(data, [1,2], pm)     # wrong pos length
+    
+    # InteractionMatrix
+    M = zeros(L, L)
+    im = InteractionMatrix(M, pos, :phi)
+    @test im.method == :phi
+    @test !im.apc_applied
+    
+    @test_throws ArgumentError InteractionMatrix(zeros(L, L+1), pos, :phi) # not square
 end
 
 @testset "Validator" begin

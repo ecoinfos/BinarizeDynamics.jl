@@ -17,9 +17,10 @@ diff_dynamics
 ## Types
 
 ```@docs
-BinarizedData
+BinarizedPairs
 PairMapper
 InteractionMatrix
+DiffResult
 ```
 
 ## Visualization
@@ -27,4 +28,20 @@ InteractionMatrix
 ```@docs
 plot_interaction
 plot_differential
+```
+
+## Utilities
+
+```@docs
+pair_index
+pair_from_index
+index_to_pair
+pair_to_index
+```
+
+## IO
+
+```@docs
+read_fasta
+read_csv_sequences
 ```

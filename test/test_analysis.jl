@@ -10,74 +10,74 @@ using LinearAlgebra
         # Seq 2: B B
         # Seq 3: A A
         # Seq 4: B B
-        # Pairs:
-        # (1,2): A!=B, A!=B -> 1, 1
-        # (1,3): A==A, A==A -> 0, 0
-        # ...
-        # If the pattern of differences matches exactly, correlation should be 1.0.
         
         seqs = ["AA", "BB", "AA", "BB"]
-        # Pos 1 col: [1, 0, 1, 1, 0, 1] (diff pattern for 4 seqs -> 6 pairs)
-        # Pos 2 col: [1, 0, 1, 1, 0, 1]
-        # Identical columns -> Correlation 1.0
         
         data = binarize(seqs)
-        res = analyze_structure(data, method=:phi) # Use raw phi first
+        # New API: method=:phi, apc=false
+        res = analyze_structure(data, method=:phi, apc=false)
         
         # Diagonal should be 1.0
-        @test res.matrix[1, 1] == 1.0
-        @test res.matrix[2, 2] == 1.0
+        @test res.values[1, 1] == 1.0
+        @test res.values[2, 2] == 1.0
         
-        # Off-diagonal should be 1.0
-        @test res.matrix[1, 2] ≈ 1.0
-        @test res.matrix[2, 1] ≈ 1.0
+        # Off-diagonal should be 1.0 (perfectly correlated)
+        @test res.values[1, 2] ≈ 1.0
+        @test res.values[2, 1] ≈ 1.0
     end
     
     @testset "Anti-Coupling / Random" begin
-        # Simple case: 
-        # Pos 1: 0 1 0 1
-        # Pos 2: 1 0 1 0
-        # If we can construct sequences like this?
-        # binarize result depends on pairs.
-        # Direct check of analyze_structure with mock BinarizedData
+        # Mock BitMatrix manual construction
+        # 6 pairs (N=4)
+        mapper = PairMapper(4) 
         
-        # Mock BitMatrix
-        # 4 pairs, 2 positions
-        # Col 1: 1 0 1 0
-        # Col 2: 0 1 0 1 (Perfectly anticorrelated?)
-        # Phi coeff should be -1.0
-        
-        bits = BitMatrix([1 0; 0 1; 1 0; 0 1])
-        # n=4. n_seqs? doesn't matter for analysis, only internal consistency of math
-        # Helper: analyze_structure computes stats on columns.
-        
-        # But we need a valid BinarizedData object.
-        # PairMapper(N). N needs to match rows?
-        # 4 pairs -> N approx? 
-        # N=4 -> 6 pairs. 
-        # N=3 -> 3 pairs.
-        # Let's just use N=99 (dummy) in mapper, as long as size matches.
-        # Actually PairMapper isn't used in analyze_structure, only bdata.data.
-        
-        mapper = PairMapper(4) # 6 pairs.
-        # Let's make 6 rows.
-        bits = BitMatrix([1 0; 1 0; 1 0; 0 1; 0 1; 0 1])
+        # Make 6 rows.
         # Col 1: 3 ones, 3 zeros. Mean = 0.5
         # Col 2: 3 zeros, 3 ones. Mean = 0.5
         # Intersection (1&1): 0.
         # Phi = (0 - 0.5*0.5) / (0.5*0.5) = -0.25 / 0.25 = -1.0
         
-        bdata = BinarizedData(bits, mapper, 2)
-        res = analyze_structure(bdata, method=:phi) # Raw phi
+        bits = BitMatrix([1 0; 1 0; 1 0; 0 1; 0 1; 0 1])
+        positions = [1, 2]
         
-        @test res.matrix[1, 2] ≈ -1.0
+        # BinarizedPairs(data, positions, mapper)
+        bdata = BinarizedPairs(bits, positions, mapper)
+        
+        res = analyze_structure(bdata, method=:phi, apc=false)
+        
+        @test res.values[1, 2] ≈ -1.0
     end
     
     @testset "APC" begin
         # Verify valid run only
         seqs = ["AAA", "BBB", "CCC"]
         data = binarize(seqs)
-        res = analyze_structure(data, method=:phi_apc)
-        @test size(res.matrix) == (3, 3)
+        
+        # Raw Phi
+        res_phi = analyze_structure(data, method=:phi, apc=false)
+        
+        # Phi + APC
+        res_apc = analyze_structure(data, method=:phi, apc=true)
+        
+        # Legacy :phi_apc support
+        res_legacy = analyze_structure(data, method=:phi_apc)
+        
+        @test size(res_apc.values) == (3, 3)
+        @test res_apc.apc_applied == true
+        @test res_legacy.values == res_apc.values
+        
+        # APC should generally reduce the average background signal.
+        # But for strictly correlated seqs like this, values might shift.
+        # Just check it runs and produces different values.
+        @test res_phi.values != res_apc.values
+    end
+    
+    @testset "Differential Dynamics" begin
+        M1 = InteractionMatrix(ones(2,2), [1,2], :phi)
+        M2 = InteractionMatrix(fill(0.5, 2, 2), [1,2], :phi)
+        
+        diff = diff_dynamics(M1, M2) # M1 - M2
+        @test all(diff.values .== 0.5)
+        @test diff.method == :diff_dynamics
     end
 end

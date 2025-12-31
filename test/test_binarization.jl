@@ -7,11 +7,19 @@ using BinarizeDynamics
         seqs = ["A", "B"]
         # N=2 -> 1 pair (1,2)
         # L=1
+        
+        # Default Typed
         data = binarize(seqs)
+        @test data isa BinarizedPairs
         @test data.mapper.total_pairs == 1
         @test size(data.data) == (1, 1)
         @test data.data[1, 1] == 1 # Different
         
+        # Raw Return
+        raw_data = binarize(seqs, return_type=:raw)
+        @test raw_data isa BitMatrix
+        @test raw_data == data.data
+
         # TC-02: Identical
         seqs_same = ["A", "A"]
         data_same = binarize(seqs_same)
