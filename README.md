@@ -1,6 +1,6 @@
 # BinarizeDynamics.jl
 
-[![Build Status](https://github.com/ecoinfos/BinarizeDynamics.jl/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ecoinfos/BinarizeDynamics.jl/actions/workflows/ci.yml?query=branch%3Amain)
+[![Build Status](https://github.com/ecoinfos/BinarizeDynamics.jl/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/ecoinfos/BinarizeDynamics.jl/actions/workflows/ci.yml?query=branch%3Amaster)
 [![codecov](https://codecov.io/gh/ecoinfos/BinarizeDynamics.jl/graph/badge.svg)](https://codecov.io/gh/ecoinfos/BinarizeDynamics.jl)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Julia](https://img.shields.io/badge/julia-v1.10+-blue.svg)](https://julialang.org)
