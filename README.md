@@ -1,7 +1,9 @@
 # BinarizeDynamics.jl
 
 [![Build Status](https://github.com/ecoinfos/BinarizeDynamics.jl/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ecoinfos/BinarizeDynamics.jl/actions/workflows/ci.yml?query=branch%3Amain)
-[![codecov](https://codecov.io/gh/ecoinfos/BinarizeDynamics.jl/graph/badge.svg?token=token)](https://codecov.io/gh/ecoinfos/BinarizeDynamics.jl)
+[![codecov](https://codecov.io/gh/ecoinfos/BinarizeDynamics.jl/graph/badge.svg)](https://codecov.io/gh/ecoinfos/BinarizeDynamics.jl)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Julia](https://img.shields.io/badge/julia-v1.10+-blue.svg)](https://julialang.org)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://ecoinfos.github.io/BinarizeDynamics.jl/dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
